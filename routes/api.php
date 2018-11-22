@@ -16,3 +16,14 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/fight/index','FightController@index')->name('index');
+
+Route::post('/fight/chooseTemplateList','FightController@chooseTemplateList')->name('chooseTemplateList');
+
+
+Route::post('/fight/syncTemplates','FightController@syncTemplates')->name('syncTemplates');
+
+Route::post('/fight/evilTemplateList','FightController@evilTemplateList')->name('evilTemplateList');
+
+Route::post('/fight/hotSearchList','FightController@hotSearchList')->name('hotSearchList');
