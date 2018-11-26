@@ -36,6 +36,16 @@ function getUserInfo($token){
    }
 }
 
+function path_info($filepath)   
+{   
+    $path_parts = array();   
+    $path_parts ['dirname'] = rtrim(substr($filepath, 0, strrpos($filepath, '/')),"/")."/";   
+    $path_parts ['basename'] = ltrim(substr($filepath, strrpos($filepath, '/')),"/");   
+    $path_parts ['extension'] = substr(strrchr($filepath, '.'), 1);   
+    $path_parts ['filename'] = ltrim(substr($path_parts ['basename'], 0, strrpos($path_parts ['basename'], '.')),"/");   
+    return $path_parts;   
+} 
+
 function scanFile($path) {
     global $result;
     $files = scandir($path);
@@ -45,21 +55,11 @@ function scanFile($path) {
             if (is_dir($path . '/' . $file)) {
                 scanFile($path . '/' . $file);
             } else {
-                $pathinfo = pathinfo($path);
-                $filename = $pathinfo['filename'];
-                $arr[] = basename($file);
-                array_push($arr,$filename);
-                $arr = array_unique($arr);
-                //获取文件内容
-                $intro = '';
-                foreach($arr as $vs){
-                    if($vs=='intro.txt'){
-                        $intro = $vs;
-                    }
-                }
+                $pathinfo = path_info($path);
+                $filename = $pathinfo['basename'];
+                $arr[] = path_info($file)['basename'];
+                // array_push($arr,$filename);
 
-                $content = file_get_contents($path.'/'.$intro);
-                array_push($arr,$content);
                 $arr = array_filter($arr);
                 $result[$filename] = $arr;
             }
@@ -142,3 +142,25 @@ function generateTree($array){
     }
     return $trees;
 }
+
+
+function sCurl($url){
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL,$url);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER,[]);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+
+    $res = curl_exec($ch);
+
+    curl_close($ch);
+
+    return $res;
+
+}
+
+
